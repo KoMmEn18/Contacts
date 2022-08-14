@@ -1,7 +1,7 @@
 package contacts;
 
+import contacts.actions.Action;
 import contacts.actions.ActionManager;
-import contacts.actions.AddContact;
 import java.util.Scanner;
 
 public class ContactManager {
@@ -11,7 +11,17 @@ public class ContactManager {
     private final Database database = new Database();
 
     public void run() {
-        actionManager.setAction(new AddContact());
-        actionManager.execute(scanner, database);
+        while (true) {
+            printActionMenu();
+            String action = scanner.nextLine();
+            actionManager.setAction(action);
+            actionManager.execute(scanner, database);
+        }
+    }
+
+    private void printActionMenu() {
+        System.out.print("Enter action (");
+        System.out.print(String.join(", ", Action.actions.keySet()));
+        System.out.print("): ");
     }
 }
