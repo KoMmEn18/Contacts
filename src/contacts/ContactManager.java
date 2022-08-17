@@ -16,6 +16,7 @@ public class ContactManager {
             String action = scanner.nextLine();
             actionManager.setAction(action);
             actionManager.execute(scanner, database);
+            System.out.println();
         }
     }
 
