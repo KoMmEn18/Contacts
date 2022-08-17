@@ -19,7 +19,7 @@ public interface Action {
         map.put("remove", new RemoveContact());
         map.put("edit", new EditContact());
         map.put("count", new CountContacts());
-        map.put("list", new ListContacts());
+        map.put("info", new ShowContactInfo());
         map.put("exit", new TerminateApp());
 
         return Collections.unmodifiableMap(map);

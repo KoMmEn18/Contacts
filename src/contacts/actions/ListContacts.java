@@ -1,6 +1,6 @@
 package contacts.actions;
 
-import contacts.Contact;
+import contacts.models.Contact;
 import contacts.Database;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ public class ListContacts implements Action {
             ArrayList<Contact> contacts = database.getContacts();
             int counter = 1;
             for (Contact contact : contacts) {
-                System.out.println(counter++ + ". " + contact);
+                System.out.println(counter++ + ". " + contact.toSimpleString());
             }
         } else {
             System.out.println("No records to list!");

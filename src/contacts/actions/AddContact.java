@@ -1,6 +1,9 @@
 package contacts.actions;
 
 import contacts.Database;
+import contacts.models.factories.ContactFactory;
+import contacts.models.factories.OrganizationFactory;
+import contacts.models.factories.PersonFactory;
 
 import java.util.Scanner;
 
@@ -8,13 +11,23 @@ public class AddContact implements Action {
 
     @Override
     public void execute(Scanner scanner, Database database) {
-        System.out.print("Enter the name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter the surname: ");
-        String surname = scanner.nextLine();
-        System.out.print("Enter the number: ");
-        String number = scanner.nextLine();
-        database.addContact(name, surname, number);
+        System.out.print("Enter the type (person, organization): ");
+        boolean contactAdded = false;
+        while (!contactAdded) {
+            ContactFactory contactFactory = switch (scanner.nextLine().toLowerCase()) {
+                case "person" -> new PersonFactory(scanner);
+                case "organization" -> new OrganizationFactory(scanner);
+                default -> null;
+            };
+
+            if (contactFactory == null) {
+                System.out.println("You have not provided valid record number or field. Try again");
+            } else {
+                database.addContact(contactFactory.create());
+                contactAdded = true;
+            }
+        }
+
         System.out.println("The record added.");
     }
 }
