@@ -15,17 +15,17 @@ public class OrganizationFactory implements ContactFactory {
 
     @Override
     public Contact create() {
-        Organization.OrganizationBuilder organizationBuilder = new Organization.OrganizationBuilder();
+        Organization organization = new Organization();
 
         System.out.print("Enter the name: ");
-        organizationBuilder.setName(scanner.nextLine());
+        organization.setName(scanner.nextLine());
 
         System.out.print("Enter the address: ");
-        organizationBuilder.setAddress(scanner.nextLine());
+        organization.setAddress(scanner.nextLine());
 
         System.out.print("Enter the number: ");
-        organizationBuilder.setNumber(scanner.nextLine());
+        organization.setNumber(scanner.nextLine());
 
-        return organizationBuilder.build();
+        return organization;
     }
 }

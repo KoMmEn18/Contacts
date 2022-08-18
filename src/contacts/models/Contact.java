@@ -1,17 +1,28 @@
 package contacts.models;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public abstract class Contact {
-    private String number;
+    private String number = "";
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    protected Contact(String number) {
-        setNumber(number);
+    protected Contact() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+    }
+
+    protected Contact(String number) {
+        this();
+        setNumber(number);
     }
 
     public String getNumber() {
@@ -44,12 +55,16 @@ public abstract class Contact {
         return !number.isEmpty();
     }
 
-    private static boolean isNumberValid(String number) {
-        Pattern pattern = Pattern.compile("^\\+?(\\(\\w+\\)|\\w+[ -]\\(\\w{2,}\\)|\\w+)([ -]\\w{2,})*$");
-        return pattern.matcher(number).matches();
-    }
+    public void setField(String field, String value) throws InvocationTargetException, IllegalAccessException {
+        List<String> fields = getEditableFields();
+        Method method = getMethod(this, field);
+        if (fields.contains(field) && method != null) {
+            method.invoke(this, value);
+            return;
+        }
 
-    public abstract String toSimpleString();
+        throw new IllegalArgumentException();
+    }
 
     @Override
     public String toString() {
@@ -57,5 +72,30 @@ public abstract class Contact {
                 "Number: " + getNumber(),
                 "Time created: " + getCreatedAt(),
                 "Time last edit: " + getUpdatedAt());
+    }
+
+    public abstract String toSimpleString();
+
+    public abstract List<String> getEditableFields();
+
+    protected List<String> getAllEditableFields(Object obj) {
+        ArrayList<Field> fields = new ArrayList<>();
+        fields.addAll(List.of(obj.getClass().getDeclaredFields()));
+        fields.addAll(List.of(obj.getClass().getSuperclass().getDeclaredFields()));
+        fields.removeIf(field -> field.getName().equals("createdAt") || field.getName().equals("updatedAt"));
+
+        return fields.stream().map(Field::getName).collect(Collectors.toList());
+    }
+
+    protected Method getMethod(Object obj, String input) {
+        return Arrays.stream(obj.getClass().getMethods())
+                .filter(method -> method.getName().toLowerCase().equals("set" + input))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private static boolean isNumberValid(String number) {
+        Pattern pattern = Pattern.compile("^\\+?(\\(\\w+\\)|\\w+[ -]\\(\\w{2,}\\)|\\w+)([ -]\\w{2,})*$");
+        return pattern.matcher(number).matches();
     }
 }

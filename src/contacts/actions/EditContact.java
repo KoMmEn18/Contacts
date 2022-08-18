@@ -1,10 +1,9 @@
 package contacts.actions;
 
 import contacts.Database;
-import contacts.models.editors.ContactEditor;
-import contacts.models.editors.OrganizationEditor;
-import contacts.models.editors.PersonEditor;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Scanner;
 
 public class EditContact implements Action {
@@ -25,14 +24,21 @@ public class EditContact implements Action {
                     continue;
                 }
 
-                ContactEditor contactEditor;
-                if (database.isPersonInstance(record)) {
-                    contactEditor = new PersonEditor(scanner, database);
-                } else {
-                    contactEditor = new OrganizationEditor(scanner, database);
+                List<String> fields = database.getContactEditableFields(record);
+                String fieldsString = String.join(", ", fields);
+                System.out.print("Select a field (" + fieldsString + "): ");
+                String field = scanner.nextLine().toLowerCase();
+
+                if (fields.contains(field)) {
+                    System.out.print("Enter " + field + ": ");
+                    String value = scanner.nextLine();
+                    try {
+                        contactEdited = database.updateField(record, field, value);
+                    } catch (InvocationTargetException|IllegalAccessException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
 
-                contactEdited = contactEditor.edit(record);
                 if (!contactEdited) {
                     System.out.println("You have not provided valid field. Try again");
                 }
