@@ -27,4 +27,9 @@ public class RemoveContact implements Action {
             System.out.println("No records to remove!");
         }
     }
+
+    @Override
+    public boolean isModifyingData() {
+        return true;
+    }
 }

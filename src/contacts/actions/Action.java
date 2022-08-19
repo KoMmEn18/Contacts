@@ -13,6 +13,10 @@ public interface Action {
 
     public void execute(Scanner scanner, Database database);
 
+    public default boolean isModifyingData() {
+        return false;
+    }
+
     private static Map<String, Action> getActions() {
         var map = new LinkedHashMap<String, Action>();
         map.put("add", new AddContact());

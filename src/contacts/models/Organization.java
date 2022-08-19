@@ -1,11 +1,16 @@
 package contacts.models;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
-public class Organization extends Contact {
+public class Organization extends Contact implements Serializable {
 
     private String name = "";
     private String address = "";
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public Organization() {
         super();

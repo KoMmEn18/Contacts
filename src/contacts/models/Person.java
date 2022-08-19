@@ -1,10 +1,12 @@
 package contacts.models;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-public class Person extends Contact {
+public class Person extends Contact implements Serializable {
 
     public enum Gender {
         MALE, FEMALE
@@ -14,6 +16,9 @@ public class Person extends Contact {
 
     private LocalDate birth = null;
     private Gender gender = null;
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public Person() {
         super();

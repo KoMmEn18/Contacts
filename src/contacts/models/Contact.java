@@ -1,5 +1,7 @@
 package contacts.models;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -10,10 +12,13 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public abstract class Contact {
+public abstract class Contact implements Serializable {
     private String number = "";
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     protected Contact() {
         this.createdAt = LocalDateTime.now();

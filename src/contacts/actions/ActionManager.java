@@ -10,6 +10,10 @@ public class ActionManager {
         this.action = Action.actions.getOrDefault(action, new UnknownAction());
     }
 
+    public Action getAction() {
+        return action;
+    }
+
     public void execute(Scanner scanner, Database database) {
         this.action.execute(scanner, database);
     }

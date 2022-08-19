@@ -22,7 +22,7 @@ public class Database {
         return true;
     }
 
-    public boolean updateField(int index, String field, String value) throws InvocationTargetException, IllegalAccessException {
+    public boolean editContact(int index, String field, String value) throws InvocationTargetException, IllegalAccessException {
         if (!isIndexValid(index)) {
             return false;
         }

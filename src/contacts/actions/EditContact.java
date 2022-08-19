@@ -33,7 +33,7 @@ public class EditContact implements Action {
                     System.out.print("Enter " + field + ": ");
                     String value = scanner.nextLine();
                     try {
-                        contactEdited = database.updateField(record, field, value);
+                        contactEdited = database.editContact(record, field, value);
                     } catch (InvocationTargetException|IllegalAccessException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -47,5 +47,10 @@ public class EditContact implements Action {
         } else {
             System.out.println("No records to edit!");
         }
+    }
+
+    @Override
+    public boolean isModifyingData() {
+        return true;
     }
 }

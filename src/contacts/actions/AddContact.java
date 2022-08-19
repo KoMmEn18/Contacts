@@ -30,4 +30,9 @@ public class AddContact implements Action {
 
         System.out.println("The record added.");
     }
+
+    @Override
+    public boolean isModifyingData() {
+        return true;
+    }
 }
