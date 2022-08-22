@@ -1,5 +1,6 @@
 package contacts.actions;
 
+import contacts.Context;
 import contacts.Database;
 import contacts.models.factories.ContactFactory;
 import contacts.models.factories.OrganizationFactory;
@@ -10,7 +11,10 @@ import java.util.Scanner;
 public class AddContact implements Action {
 
     @Override
-    public void execute(Scanner scanner, Database database) {
+    public void execute(Context context) {
+        Database database = context.getDatabase();
+        Scanner scanner = context.getScanner();
+
         System.out.print("Enter the type (person, organization): ");
         boolean contactAdded = false;
         while (!contactAdded) {

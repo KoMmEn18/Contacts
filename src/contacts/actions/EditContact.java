@@ -1,5 +1,6 @@
 package contacts.actions;
 
+import contacts.Context;
 import contacts.Database;
 
 import java.lang.reflect.InvocationTargetException;
@@ -8,23 +9,15 @@ import java.util.Scanner;
 
 public class EditContact implements Action {
     @Override
-    public void execute(Scanner scanner, Database database) {
-        if (database.hasContacts()) {
-            boolean contactEdited = false;
-            while (!contactEdited) {
-                (new ListContacts()).execute(scanner, database);
-                System.out.print("Select a record: ");
-                int record = -1;
-                try {
-                    record = Integer.parseInt(scanner.nextLine()) - 1;
-                } catch (NumberFormatException ignore) {}
+    public void execute(Context context) {
+        Database database = context.getDatabase();
+        Scanner scanner = context.getScanner();
 
-                if (!database.isIndexValid(record)) {
-                    System.out.println("That's not a valid record number. Try again");
-                    continue;
-                }
-
-                List<String> fields = database.getContactEditableFields(record);
+        boolean contactEdited = false;
+        while (!contactEdited) {
+            int index = context.getContactIndex();
+            if (database.isIndexValid(index)) {
+                List<String> fields = database.getContactEditableFields(index);
                 String fieldsString = String.join(", ", fields);
                 System.out.print("Select a field (" + fieldsString + "): ");
                 String field = scanner.nextLine().toLowerCase();
@@ -33,7 +26,7 @@ public class EditContact implements Action {
                     System.out.print("Enter " + field + ": ");
                     String value = scanner.nextLine();
                     try {
-                        contactEdited = database.editContact(record, field, value);
+                        contactEdited = database.editContact(index, field, value);
                     } catch (InvocationTargetException|IllegalAccessException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -43,10 +36,11 @@ public class EditContact implements Action {
                     System.out.println("You have not provided valid field. Try again");
                 }
             }
-            System.out.println("The record updated!");
-        } else {
-            System.out.println("No records to edit!");
+
         }
+        System.out.println("Saved");
+        context.addNextAction(new PrintContactInfo());
+        context.addNextAction(new ManageContact());
     }
 
     @Override

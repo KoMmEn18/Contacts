@@ -1,12 +1,10 @@
 package contacts.actions;
 
-import contacts.Database;
-
-import java.util.Scanner;
+import contacts.Context;
 
 public class TerminateApp implements Action {
     @Override
-    public void execute(Scanner scanner, Database database) {
+    public void execute(Context context) {
         System.exit(1);
     }
 }

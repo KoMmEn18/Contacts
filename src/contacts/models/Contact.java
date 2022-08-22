@@ -62,10 +62,20 @@ public abstract class Contact implements Serializable {
 
     public void setField(String field, String value) throws InvocationTargetException, IllegalAccessException {
         List<String> fields = getEditableFields();
-        Method method = getMethod(this, field);
+        Method method = getMethod(this, field, "set");
         if (fields.contains(field) && method != null) {
             method.invoke(this, value);
             return;
+        }
+
+        throw new IllegalArgumentException();
+    }
+
+    public Object getField(String field) throws InvocationTargetException, IllegalAccessException {
+        List<String> fields = getEditableFields();
+        Method method = getMethod(this, field, "get");
+        if (fields.contains(field) && method != null) {
+            return method.invoke(this);
         }
 
         throw new IllegalArgumentException();
@@ -87,14 +97,15 @@ public abstract class Contact implements Serializable {
         ArrayList<Field> fields = new ArrayList<>();
         fields.addAll(List.of(obj.getClass().getDeclaredFields()));
         fields.addAll(List.of(obj.getClass().getSuperclass().getDeclaredFields()));
-        fields.removeIf(field -> field.getName().equals("createdAt") || field.getName().equals("updatedAt"));
+        ArrayList<String> nonEditableFields = new ArrayList<>(List.of(new String[]{"createdAt", "updatedAt", "serialVersionUID"}));
+        fields.removeIf(field -> nonEditableFields.contains(field.getName()));
 
         return fields.stream().map(Field::getName).collect(Collectors.toList());
     }
 
-    protected Method getMethod(Object obj, String input) {
+    protected Method getMethod(Object obj, String input, String prefix) {
         return Arrays.stream(obj.getClass().getMethods())
-                .filter(method -> method.getName().toLowerCase().equals("set" + input))
+                .filter(method -> method.getName().toLowerCase().equals(prefix + input))
                 .findFirst()
                 .orElse(null);
     }

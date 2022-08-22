@@ -1,13 +1,11 @@
 package contacts.actions;
 
-import contacts.Database;
-
-import java.util.Scanner;
+import contacts.Context;
 
 public class CountContacts implements Action {
 
     @Override
-    public void execute(Scanner scanner, Database database) {
-        System.out.println("The Phone Book has " + database.getContactsCount() + " records.");
+    public void execute(Context context) {
+        System.out.println("The Phone Book has " + context.getDatabase().getContactsCount() + " records.");
     }
 }

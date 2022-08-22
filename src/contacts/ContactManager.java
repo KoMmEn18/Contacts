@@ -4,17 +4,12 @@ import contacts.actions.Action;
 import contacts.actions.ActionManager;
 import contacts.utils.SerializationUtils;
 
-import java.util.Scanner;
 
 public class ContactManager {
 
     private final ActionManager actionManager = new ActionManager();
-    private final Scanner scanner = new Scanner(System.in);
-    private final Database database = new Database();
-
-    private String filename = "";
-
-    public ContactManager() {}
+    private final Context context = Context.getContext();
+    private String filename;
 
     public ContactManager(String filename) {
         this.filename = filename;
@@ -23,28 +18,35 @@ public class ContactManager {
     public void run() {
         deserializeContacts();
         while (true) {
-            printActionMenu();
-            String action = scanner.nextLine();
-            actionManager.setAction(action);
-            actionManager.execute(scanner, database);
-            serializeContacts();
+            Action nextAction = context.getNextAction();
+            if (nextAction != null) {
+                actionManager.setAction(nextAction);
+            } else {
+                printActionMenu();
+                String action = context.getScanner().nextLine();
+                actionManager.setAction(action);
+            }
+            actionManager.execute(context);
             System.out.println();
+            serializeContacts();
         }
     }
 
     private void printActionMenu() {
-        System.out.print("Enter action (");
+        System.out.print("[menu] Enter action (");
         System.out.print(String.join(", ", Action.actions.keySet()));
         System.out.print("): ");
     }
 
     private void deserializeContacts() {
+        Database database = context.getDatabase();
         if (isFilenameSpecified()) {
             SerializationUtils.deserialize(filename, database);
         }
     }
 
     private void serializeContacts() {
+        Database database = context.getDatabase();
         if (actionManager.getAction().isModifyingData() && isFilenameSpecified()) {
             SerializationUtils.serialize(filename, database);
         }

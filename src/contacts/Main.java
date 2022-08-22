@@ -2,7 +2,7 @@ package contacts;
 
 public class Main {
     public static void main(String[] args) {
-        ContactManager contactManager = args.length == 1 ? new ContactManager(args[0]) : new ContactManager();
+        ContactManager contactManager =  new ContactManager(args.length == 1 ? args[0] : "");
         contactManager.run();
     }
 }
